@@ -11,7 +11,7 @@ const userSchema = new mongoose.Schema({
     token: { type: String },
     address: { type: String },
     pincode: { type: String },
-    type: { type: String, default: 'user' },
+    type: { type: String, default: 'buyer' },
 });
 
 

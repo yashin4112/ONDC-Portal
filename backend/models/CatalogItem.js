@@ -2,9 +2,13 @@
 const mongoose = require('mongoose');
 
 const catalogItemSchema = new mongoose.Schema({
-  sellerId: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: 'Seller',
+  // sellerId: {
+  //   type: mongoose.Schema.Types.ObjectId,
+  //   ref: 'Seller',
+  //   required: true,
+  // },
+  email: {
+    type: String,
     required: true,
   },
   name: String,
