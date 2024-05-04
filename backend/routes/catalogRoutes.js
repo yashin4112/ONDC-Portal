@@ -2,7 +2,7 @@ const express = require('express');
 const router = express.Router();
 const CatalogItem = require('../models/CatalogItem');
  
-const User = require('../models/User'); // Import the User model
+const User = require('../models/user'); // Import the User model
 
 router.post('/', async (req, res) => {
   try {

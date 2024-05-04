@@ -13,6 +13,7 @@ const catalogItemSchema = new mongoose.Schema({
   },
   name: String,
   description: String,
+  categoryId: String,
   sku: String,
   mrp: Number,
   unitOfMeasure: String,

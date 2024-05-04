@@ -85,21 +85,27 @@ app.post("/login", async (req, res) => {
 
 app.post("/insertcatalog", async (req, res) => {
     try {
-        const { email, itemName, description, sku, mrp, unitOfMeasure, image } = req.body;
-        if (!(email && itemName && description && sku && mrp && unitOfMeasure && image)) {
-            res.status(400).json({ message: "All input is required" });
+        const { email, itemName, description, sku, mrp, unitOfMeasure, image, categoryId } = req.body;
+        const seller = await User.findOne({ email: email, type: 'seller' });
+        if (!seller) {
+            return res.status(404).json({ message: 'Invalid Seller Email / Only Seller can add Items' });
         }
         else{
-            const newItem = CatalogItem.create({
-                email: email,
-                name: itemName,
-                description: description,
-                sku: sku,
-                mrp: mrp,
-                unitOfMeasure: unitOfMeasure,
-                image: image,
-            });
-            res.status(201).json({message: "Item added Successfully",item: newItem});
+            if (!(email && itemName && description && sku && mrp && unitOfMeasure && image)) {
+                res.status(400).json({ message: "All input is required" });
+            }
+            else{
+                const newItem = CatalogItem.create({
+                    email: email,
+                    name: itemName,
+                    description: description,
+                    sku: sku,
+                    mrp: mrp,
+                    unitOfMeasure: unitOfMeasure,
+                    image: image,
+                });
+                res.status(201).json({message: "Item added Successfully",item: newItem});
+            }
         }
 
     } catch (error) {
@@ -108,3 +114,23 @@ app.post("/insertcatalog", async (req, res) => {
     }
 });
 
+app.get("/getcatalog", async (req, res) => {    
+    try {
+        const catalogItems = await CatalogItem.find();
+        catalogItems ? res.status(200).json(catalogItems) : res.status(404).json({ message: 'No Items Found' });
+        res.status(200).json(catalogItems);
+    } catch (error) {
+        console.error('Error getting catalog items:', error);
+        res.status(500).json({ message: 'Error getting catalog items' });
+    }
+});
+
+app.get("/category/:categoryId", async (req, res) => {
+    try {
+        const items = await CatalogItem.find({ categoryId: req.params.categoryId });
+        items.length > 0 ? res.status(200).json(items) : res.status(404).json({ message: 'No Items Found' });
+    } catch (error) {
+        console.error('Error getting catalog items:', error);
+        res.redirect();
+    }   
+});
