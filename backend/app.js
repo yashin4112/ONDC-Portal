@@ -15,8 +15,8 @@ const User = require("./models/user");
 
 app.post("/register", async (req, res) => {
     try{
-        const { firstName, lastName, email, password } = req.body;
-        if (!(email && password && firstName && lastName)) {
+        const { firstName, lastName, email, password, mobile_number, address, type } = req.body;
+        if (!(email && password && firstName && lastName && mobile_number  && type)) {
             res.status(400).send("All input is required");
         }
 
@@ -33,6 +33,9 @@ app.post("/register", async (req, res) => {
             last_name: lastName,
             email: email.toLowerCase(), // sanitize
             password: encryptedUserPassword,
+            mobile_number: mobile_number,
+            address: address ?? "",
+            type: type
         });
 
         const token = jwt.sign(

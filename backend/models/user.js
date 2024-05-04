@@ -7,12 +7,11 @@ const userSchema = new mongoose.Schema({
     last_name: { type: String, default: null },
     email: { type: String, unique: true },
     mobile_number: { type: String, default: null },
-    department: { type: String, default: null },
     password: { type: String },
     token: { type: String },
-    bucket_location: {type: String, default: null, unique: true},
-    region: {type: String},
-    join_date: { type: Date, default: Date.now },
+    address: { type: String },
+    pincode: { type: String },
+    type: { type: String, default: 'user' },
 });
 
 
