@@ -2,7 +2,7 @@
 const mongoose = require('mongoose');
 
 // Connect to MongoDB
-mongoose.connect('mongodb+srv://shivamd26:shivam@cluster0.ct66nen.mongodb.net/bucketData', {
+mongoose.connect('mongodb+srv://hackathon:WA97ARDbuS7eUYgK@cluster0.juuxbmb.mongodb.net/', {
   useNewUrlParser: true,
   useUnifiedTopology: true,
 });
