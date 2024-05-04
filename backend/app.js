@@ -62,8 +62,7 @@ app.post("/login", async (req, res) => {
         if (!(email && password)) {
             res.status(400).json({ message: "All input is required" });
         }
-        const user = await User
-            .findOne({ email });
+        const user = await UserModel.findOne({ email });
         if (user && (await bcrypt.compare(password, user.password))) {  
             const token = jwt.sign(
                 { user_id: user._id, email },
@@ -75,7 +74,7 @@ app.post("/login", async (req, res) => {
             user.token = token;
             res.status(200).json(user);
         } else {
-            res.status(400).json({ message: "User Already Exist. Please Login" });
+            res.status(400).json({ message: "Invalid Credentials" });
         }
     }
     catch (error) {
@@ -87,12 +86,12 @@ app.post("/login", async (req, res) => {
 app.post("/insertcatalog", async (req, res) => {
     try {
         const { email, itemName, description, sku, mrp, unitOfMeasure, image, categoryId } = req.body;
-        const seller = await User.findOne({ email: email, type: 'seller' });
+        const seller = await UserModel.findOne({ email: email, type: 'seller' });
         if (!seller) {
             return res.status(404).json({ message: 'Invalid Seller Email / Only Seller can add Items' });
         }
         else{
-            if (!(email && itemName && description && sku && mrp && unitOfMeasure && image)) {
+            if (!(email && itemName && description && sku && mrp && unitOfMeasure && categoryId)) {
                 res.status(400).json({ message: "All input is required" });
             }
             else{
@@ -103,7 +102,6 @@ app.post("/insertcatalog", async (req, res) => {
                     sku: sku,
                     mrp: mrp,
                     unitOfMeasure: unitOfMeasure,
-                    image: image,
                     categoryId: categoryId
                 });
                 res.status(201).json({message: "Item added Successfully",item: newItem});
@@ -120,7 +118,6 @@ app.get("/getcatalog", async (req, res) => {
     try {
         const catalogItems = await CatalogModel.find();
         catalogItems ? res.status(200).json(catalogItems) : res.status(404).json({ message: 'No Items Found' });
-        res.status(200).json(catalogItems);
     } catch (error) {
         console.error('Error getting catalog items:', error);
         res.status(500).json({ message: 'Error getting catalog items' });
@@ -201,7 +198,7 @@ app.post("/makepayment", async (req, res) => {
     }
 });
 
-app.get("/search", async (req, res) => {
+app.post("/search", async (req, res) => {
     try {
         const { itemName } = req.body;
         if (!itemName) {

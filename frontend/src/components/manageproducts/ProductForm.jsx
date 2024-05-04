@@ -1,8 +1,13 @@
 import { useState, useEffect } from 'react';
 import axios from 'axios';
-
-function ProductForm({ setShowForm, editProduct }) {
-    const [name, setName] = useState('');
+import {
+    BrowserRouter as Router,
+    Route,
+    Routes,
+    Navigate,
+  } from "react-router-dom";
+function ProductForm({ setShowForm, editProduct , response}) {
+    const [itemName, setName] = useState('');
     const [description, setDescription] = useState('');
     const [categoryId, setCategoryId] = useState('');
     const [sku, setSku] = useState('');
@@ -25,35 +30,29 @@ function ProductForm({ setShowForm, editProduct }) {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
+        var user = localStorage.getItem('user');
+        user = JSON.parse(user);
+        const email = user.email;
+        console.log(email);
+        const item = {
+            email,
+            itemName,
+            description,
+            categoryId,
+            sku,
+            mrp,
+            unitOfMeasure,
+            // image,
+        };
 
-        const formData = new FormData();
-        formData.append('name', name);
-        formData.append('description', description);
-        formData.append('categoryId', categoryId);
-        formData.append('sku', sku);
-        formData.append('mrp', mrp);
-        formData.append('unitOfMeasure', unitOfMeasure);
-        formData.append('image', image);
+        axios.post('http://localhost:4001/insertcatalog', item).then((response) => {    
+            console.log(response);
+            // console.log("asashajshsjhaksk");
+        }).catch((error) => {
+            console.log(error);
+        });
+        navigation.navigate('/SellerHome')
 
-        try {
-            let response;
-            if (editProduct) {
-                response = await axios.put(`YOUR_BACKEND_URL/products/${editProduct.id}`, formData, {
-                    headers: {
-                        'Content-Type': 'multipart/form-data'
-                    }
-                });
-            } else {
-                response = await axios.post('YOUR_BACKEND_URL/products', formData, {
-                    headers: {
-                        'Content-Type': 'multipart/form-data'
-                    }
-                });
-            }
-            setShowForm(false);
-        } catch (error) {
-            console.error('Error adding/editing product:', error);
-        }
     };
 
     return (
@@ -61,7 +60,7 @@ function ProductForm({ setShowForm, editProduct }) {
             <div className="container mx-auto">
                 <h2 className="text-xl font-bold mb-2">{editProduct ? 'Edit Product' : 'Add Product'}</h2>
                 <form onSubmit={handleSubmit} className="max-w-lg">
-                    <input type="text" value={name} onChange={(e) => setName(e.target.value)} placeholder="Name" className="block w-full border border-gray-300 rounded px-4 py-2 mb-2" required />
+                    <input type="text" value={itemName} onChange={(e) => setName(e.target.value)} placeholder="Name" className="block w-full border border-gray-300 rounded px-4 py-2 mb-2" required />
                     <input type="text" value={description} onChange={(e) => setDescription(e.target.value)} placeholder="Description" className="block w-full border border-gray-300 rounded px-4 py-2 mb-2" required />
                     <input type="text" value={categoryId} onChange={(e) => setCategoryId(e.target.value)} placeholder="Category ID" className="block w-full border border-gray-300 rounded px-4 py-2 mb-2" required />
                     <input type="text" value={sku} onChange={(e) => setSku(e.target.value)} placeholder="SKU" className="block w-full border border-gray-300 rounded px-4 py-2 mb-2" required />

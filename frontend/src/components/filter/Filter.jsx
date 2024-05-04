@@ -1,10 +1,31 @@
 import React, { useContext } from 'react'
 import myContext from '../../context/data/myContext'
+import axios from 'axios'
+import { useState, useEffect } from 'react';
 
 function Filter() {
     const context = useContext(myContext)
-    const { mode, searchkey, setSearchkey, filterType, setFilterType,
+    const { mode,  filterType, setFilterType,
         filterPrice, setFilterPrice, product } = context
+    const [itemName, setItemName] = useState('')
+
+    const searchItem = () => {
+        if (itemName === '') {
+            
+        }
+        else {
+            const data = {itemName}
+            console.log(data);
+            axios.post('http://localhost:4001/search', data ).then((response) => {
+                console.log(response);
+                localStorage.setItem('searchedItem', JSON.stringify(response.data));
+                navigaton.navigate('/productinfo')
+            }
+            ).catch((error) => {
+                console.log(error);
+            });
+        }
+    }
 
     return (
         <div>
@@ -22,12 +43,14 @@ function Filter() {
                         </div>
                         <input
                             type="text"
-                            name="searchkey"
-                            value={searchkey}
-                            onChange={(e) => setSearchkey(e.target.value)}
-                            id="searchkey"
+                            name="itemName"
+                            value={itemName}
+                            onChange={(e) => setItemName(e.target.value)}
+                            id="itemName"
                             placeholder="Search here"
-                            className="px-8 py-3 w-full rounded-md bg-violet-0 border-transparent outline-0 text-sm" style={{ backgroundColor: mode === 'dark' ? 'rgb(64 66 70)' : '', color: mode === 'dark' ? 'white' : '', }} />
+                            className="px-8 py-3 w-100 rounded-md bg-violet-0 border-transparent outline-0 text-sm" style={{ backgroundColor: mode === 'dark' ? 'rgb(64 66 70)' : '', color: mode === 'dark' ? 'white' : '', }} />
+                            &nbsp; &nbsp;&nbsp;
+                        <button onClick={searchItem}> Search </button>
                     </div>
                    
                     

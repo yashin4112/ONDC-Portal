@@ -7,6 +7,7 @@ import { doc, getDoc } from 'firebase/firestore';
 import { toast } from 'react-toastify';
 import { addToCart } from '../../redux/cartSlice';
 import { fireDB } from '../../fireabase/FirebaseConfig';
+import axios from 'axios';
 
 function ProductInfo() {
     const context = useContext(myContext);
@@ -18,16 +19,20 @@ function ProductInfo() {
 
     const getProductData = async () => {
         setLoading(true)
-        try {
-            const productTemp = await getDoc(doc(fireDB, "products", params.id))
-            // console.log(productTemp)
-            setProducts(productTemp.data());
-            // console.log(productTemp.data())
-            setLoading(false)
-        } catch (error) {
-            console.log(error)
-            setLoading(false)
-        }
+        // try {
+        //     axios.get(`http://localhost:4001/getcatalog/${params.id}`).then((response) => {
+        //         console.log(response);
+        //         setProducts(response.data);
+        //         setLoading(false);
+        //     }).catch((error) => {
+        //         console.log(error);
+        //         setLoading(false);
+        //     });
+        // } catch (error) {
+        //     console.log(error)
+        //     setLoading(false)
+        // }
+        
     }
 
 

@@ -23,6 +23,7 @@ import 'react-toastify/dist/ReactToastify.css';
 import Allproducts from './pages/allproducts/Allproducts';
 import ManageProduct from './components/manageproducts/manageproduct';
 function App() {
+  localStorage.setItem('isAuthenticated', "false");
   return (
     <MyState>
       <Router>
@@ -44,7 +45,7 @@ function App() {
           } />
           <Route path='/login' element={<Login/>} />
           <Route path='/signup' element={<Signup/>} />
-          <Route path='/productinfo/:id' element={<ProductInfo/>} />
+          <Route path='/productinfo' element={<ProductInfo/>} />
           <Route path='/addproduct' element={
             <ProtectedRouteForAdmin>
               <AddProduct/>
@@ -69,8 +70,8 @@ export default App
 // user 
 
 export const ProtectedRoute = ({children}) => {
-  const user = localStorage.getItem('user')
-  if(user){
+  const user = localStorage.getItem('isAuthenticated')
+  if(user == "true"){
     return children
   }else{
     return <Navigate to={'/login'}/>

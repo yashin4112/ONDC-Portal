@@ -5,6 +5,13 @@ import { signInWithEmailAndPassword } from 'firebase/auth';
 import { auth } from '../../fireabase/FirebaseConfig';
 import { toast } from 'react-toastify';
 import Loader from '../../components/loader/Loader';
+import axios from 'axios';
+import {
+    BrowserRouter as Router,
+    Route,
+    Routes,
+    Navigate,
+  } from "react-router-dom";
 
 function Login() {
     const context = useContext(myContext)
@@ -12,26 +19,29 @@ function Login() {
 
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
+    const [response, setResponse] = useState({});
 
     const navigate = useNavigate();
+    const [navigateToHome, setNavigateToHome] = useState(false);
+    const [userType, setUserType] = useState("buyer");
 
     const login = async () => {
         setLoading(true)
         try {
-            const result = await signInWithEmailAndPassword(auth,email,password);
-            toast.success("Login successful", {
-                position: "top-right",
-                autoClose: 2000,
-                hideProgressBar: true,
-                closeOnClick: true,
-                pauseOnHover: true,
-                draggable: true,
-                progress: undefined,
-                theme: "colored",
-              })
-            localStorage.setItem('user', JSON.stringify(result))
-            navigate('/')
-            setLoading(false)
+            const creden = {email, password}
+            axios.post('http://localhost:4001/login', creden)
+            .then(function (response) {
+                console.log(response);
+                localStorage.setItem('isAuthenticated', "true");
+                localStorage.setItem('user', JSON.stringify(response.data));
+                setNavigateToHome(true);
+                setLoading(false);
+                setUserType(response.data.type);
+                return <Navigate to={'/'}/>
+            })
+            .catch(function (error) {
+                console.log(error);
+            });
             
         } catch (error) {
             console.log(error)
@@ -41,7 +51,10 @@ function Login() {
     }
    
     return (
-        <div className=' flex justify-center items-center h-screen'>
+        <>
+            {localStorage.getItem('isAuthenticated') == "true" ? userType == "buyer" ? <Navigate to="/" /> : <Navigate to="/SellerHome"/> : <Navigate to="/login"/>}
+
+            <div className=' flex justify-center items-center h-screen'>
             {loading && <Loader/>}
             <div className=' bg-gray-800 px-10 py-10 rounded-xl '>
                 <div className="">
@@ -77,6 +90,7 @@ function Login() {
                 </div>
             </div>
         </div>
+        </>
     )
 }
 

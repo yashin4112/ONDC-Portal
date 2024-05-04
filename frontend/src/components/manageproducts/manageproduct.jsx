@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { getDocs, collection, deleteDoc, doc } from 'firebase/firestore';
 import { fireDB } from '../../fireabase/FirebaseConfig';
 import ProductForm from './ProductForm';
+import axios from 'axios';
 
 function ManageProduct() {
     const [products, setProducts] = useState([]);
@@ -11,10 +12,16 @@ function ManageProduct() {
     useEffect(() => {
         // Fetch seller's products from the database
         const fetchProducts = async () => {
-            const productsCollection = collection(fireDB, 'products');
-            const snapshot = await getDocs(productsCollection);
-            const productsData = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-            setProducts(productsData);
+            // const productsCollection = collection(fireDB, 'products');
+            // const snapshot = await getDocs(productsCollection);
+            // const productsData = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+            // setProducts(productsData);
+            axios.get('http://localhost:4001/getcatalog').then((response) => {
+                console.log(response);
+                setProducts(response.data);
+            }).catch((error) => {
+                console.log(error);
+            });
         };
 
         fetchProducts();
