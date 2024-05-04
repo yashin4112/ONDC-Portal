@@ -31,7 +31,7 @@ app.post("/register", async (req, res) => {
         const user = await User.create({
             first_name: firstName,
             last_name: lastName,
-            email: email.toLowerCase(), // sanitize
+            email: email.toLowerCase(), 
             password: encryptedUserPassword,
             mobile_number: mobile_number,
             address: address ?? "",
@@ -53,14 +53,3 @@ app.post("/register", async (req, res) => {
         console.log(error);
     }   
 });
-
-// app.get("/employeedata", async (req, res) => {
-//     try{
-//         const employees = await User.find({});
-//         res.status(200).json(employees);
-//     } 
-//     catch (error) {
-//         console.log(error);
-//     }   
-// }); 
-
