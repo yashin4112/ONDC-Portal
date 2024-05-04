@@ -201,3 +201,19 @@ app.post("/makepayment", async (req, res) => {
     }
 });
 
+app.get("/search", async (req, res) => {
+    try {
+        const { itemName } = req.body;
+        if (!itemName) {
+            return res.status(404).json({ message: 'All input are required' });
+        }
+        else{
+            const data = await CatalogModel.find({ name: itemName})
+            data.length > 0 ? res.status(201).json(data) : res.status(404).json({message: "no data found"})
+        }
+        
+    } catch (error) {
+        console.error('Error creating Card :', error);
+        res.status(500).json({ message: 'Error creating card item' });
+    }
+});
